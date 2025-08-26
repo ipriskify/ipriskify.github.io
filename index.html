@@ -868,17 +868,14 @@
             </main>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/@ipriskify/fingerprintx/dist/ipriskify.min.js"></script>
+        <script src="./dist/ipriskify.min.js"></script>
 
         <script>
             let currentFingerprintData = null;
             
             async function loadFingerprint() {
                 try {
-                    const fpPromise = IPRiskify.load({ telemetry: true });
-                    
-                    const fp = await fpPromise;
-                    const result = await fp.get();
+                    const result = await IPRiskify.load({ telemetry: true });
                     
                     currentFingerprintData = result;
                     console.log('IPRiskify result:', result);
@@ -894,16 +891,14 @@
                     console.error('Failed to load fingerprint:', error);
                     
                     try {
-                        let fpClient;
+                        let result;
                         
                         if (window.IPRiskify && typeof window.IPRiskify.load === 'function') {
-                            const fpPromise = window.IPRiskify.load({ telemetry: true });
-                            fpClient = await fpPromise;
+                            result = await window.IPRiskify.load({ telemetry: true });
                         } else {
                             throw new Error('IPRiskify client not found.');
                         }
                         
-                        const result = await fpClient.get();
                         currentFingerprintData = result;
                         console.log('IPRiskify result (fallback):', result);
                         
