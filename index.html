@@ -933,7 +933,7 @@
                 const automationInfo = fingerprint.automationInfo || {};
                 
                 // Overview stats
-                const fingerprintHash = analysis.fingerprint || fingerprint.visitorId || '';
+                const fingerprintHash = analysis.fingerprint || fingerprint.fingerprint || '';
                 document.getElementById('stat-fingerprint').textContent = fingerprintHash || '—';
                 document.getElementById('stat-browser').textContent = analysis.browser?.name || '—';
                 document.getElementById('stat-incognito').textContent = analysis.incognito === false ? 'No' : (analysis.incognito === true ? 'Yes' : '—');
