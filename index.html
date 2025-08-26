@@ -875,7 +875,8 @@
             
             async function loadFingerprint() {
                 try {
-                    const result = await IPRiskify.load({ telemetry: true });
+                    const fp = await IPRiskify.load({ telemetry: true });
+                    const result = await fp.get();
                     
                     currentFingerprintData = result;
                     console.log('IPRiskify result:', result);
@@ -894,7 +895,8 @@
                         let result;
                         
                         if (window.IPRiskify && typeof window.IPRiskify.load === 'function') {
-                            result = await window.IPRiskify.load({ telemetry: true });
+                            const fp = await window.IPRiskify.load({ telemetry: true });
+                            result = await fp.get();
                         } else {
                             throw new Error('IPRiskify client not found.');
                         }
