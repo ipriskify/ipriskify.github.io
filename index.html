@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FingerprintX Dashboard</title>
+        
+        <link rel="stylesheet" href="https://unpkg.com/franken-ui@2.1.0-next.18/dist/css/core.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/franken-ui@2.1.0-next.18/dist/css/utilities.min.css" />
+        <script src="https://unpkg.com/franken-ui@2.1.0-next.18/dist/js/core.iife.js"></script>
+        <script src="https://unpkg.com/franken-ui@2.1.0-next.18/dist/js/icon.iife.js"></script>
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        
+        <style>
+            :root {
+                --bg-primary: #ffffff;
+                --bg-secondary: #f8f9fa;
+                --bg-tertiary: #f1f3f4;
+                --text-primary: #000000;
+                --text-secondary: #666666;
+                --text-muted: #999999;
+                --border-color: #e5e7eb;
+                --border-hover: #d1d5db;
+                --accent-primary: #000000;
+                --accent-secondary: #333333;
+                --button-bg: #000000;
+                --button-text: #ffffff;
+                --button-hover: #333333;
+                --card-bg: #ffffff;
+                --card-border: #e5e7eb;
+                --nav-bg: #f8f9fa;
+                --nav-hover: #e5e7eb;
+                --code-bg: #f1f3f4;
+                --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+                --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+                --ring-color: #000000;
+            }
+
+            [data-theme="dark"] {
+                --bg-primary: #000000;
+                --bg-secondary: #111111;
+                --bg-tertiary: #1a1a1a;
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+                --text-muted: #888888;
+                --border-color: #333333;
+                --border-hover: #444444;
+                --accent-primary: #ffffff;
+                --accent-secondary: #cccccc;
+                --button-bg: #ffffff;
+                --button-text: #000000;
+                --button-hover: #e5e7eb;
+                --card-bg: #111111;
+                --card-border: #333333;
+                --nav-bg: #111111;
+                --nav-hover: #1a1a1a;
+                --code-bg: #1a1a1a;
+                --shadow-sm: 0 1px 2px 0 rgb(255 255 255 / 0.05);
+                --shadow-md: 0 4px 6px -1px rgb(255 255 255 / 0.1);
+                --ring-color: #ffffff;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                background-color: var(--bg-primary);
+                color: var(--text-primary);
+                line-height: 1.5;
+                overflow-x: hidden;
+            }
+
+            .dashboard {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .sidebar {
+                width: 260px;
+                background-color: var(--nav-bg);
+                border-right: 1px solid var(--border-color);
+                padding: 1.5rem 0 0 0;
+                position: fixed;
+                height: 100vh;
+                overflow-y: auto;
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .main-content {
+                flex: 1;
+                margin-left: 260px;
+                padding: 1.5rem;
+                background-color: var(--bg-secondary);
+                min-height: 100vh;
+            }
+
+            .nav-header {
+                padding: 0 1.25rem 1.5rem 1.25rem;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+
+            .nav-logo {
+                display: flex;
+                align-items: center;
+                gap: 0.625rem;
+                font-size: 1.125rem;
+                font-weight: 600;
+                color: var(--text-primary);
+                text-decoration: none;
+                width: 100px;
+                height: 40px;
+            }
+
+            .nav-logo img {
+                width: 128px;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .theme-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 64px;
+                height: 32px;
+                cursor: pointer;
+                border-radius: 9999px;
+                padding: 4px;
+                transition: all 0.3s ease;
+                border: 1px solid var(--border-color);
+                background: var(--bg-primary);
+            }
+
+            .theme-toggle .toggle-switch {
+                display: flex;
+                width: 24px;
+                height: 24px;
+                align-items: center;
+                justify-content: center;
+                border-radius: 9999px;
+                transition: transform 0.3s ease;
+                background: var(--bg-secondary);
+            }
+
+            [data-theme="light"] .theme-toggle .toggle-switch {
+                transform: translateX(16px);
+            }
+
+            [data-theme="dark"] .theme-toggle .toggle-switch {
+                transform: translateX(-16px);
+            }
+
+            .nav-menu {
+                list-style: none;
+                padding: 0 1rem;
+                flex: 1;
+            }
+
+            .nav-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .nav-item {
+                margin-bottom: 0.25rem;
+            }
+
+            .nav-link {
+                display: flex;
+                align-items: center;
+                gap: 0.625rem;
+                padding: 0.625rem 0.875rem;
+                color: var(--text-secondary);
+                text-decoration: none;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+                font-weight: 500;
+                font-size: 0.875rem;
+            }
+
+            .nav-link:hover,
+            .nav-link.active {
+                background-color: var(--nav-hover);
+                color: var(--text-primary);
+            }
+
+            .nav-link.active {
+                background-color: var(--accent-primary);
+                color: var(--button-text);
+            }
+
+            .sidebar-footer {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 1rem 1.25rem;
+                border-top: 1px solid var(--border-color);
+                background-color: var(--nav-bg);
+            }
+
+            .footer-link {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--text-secondary);
+                text-decoration: none;
+                font-size: 0.875rem;
+                padding: 0.5rem;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+
+            .footer-link:hover {
+                color: var(--text-primary);
+                background-color: var(--nav-hover);
+            }
+
+            .footer-link svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .pro-banner {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                z-index: 9999;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                font-weight: 500;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                max-width: 320px;
+                backdrop-filter: blur(10px);
+                overflow: hidden;
+            }
+        
+            .pro-banner:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+                text-decoration: none;
+                color: white;
+            }
+
+            .pro-banner-content {
+                flex: 1;
+                line-height: 1.4;
+            }
+
+            .pro-banner-arrow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transition: all 0.3s ease;
+            }
+
+            .pro-banner:hover .pro-banner-arrow {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateX(2px);
+            }
+
+            .pro-banner-arrow svg {
+                width: 12px;
+                height: 12px;
+                stroke: white;
+                stroke-width: 2;
+            }
+
+            .inline-sparkles {
+                display: inline-block;
+                margin-left: 4px;
+                animation: sparkle 2s ease-in-out infinite;
+            }
+
+            @keyframes sparkle {
+                0%, 100% {
+                    opacity: 0.8;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1.1);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .pro-banner {
+                    bottom: 10px;
+                    right: 10px;
+                    left: 10px;
+                    max-width: none;
+                    font-size: 13px;
+                    padding: 10px 16px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .pro-banner-content {
+                    font-size: 12px;
+                }
+            }
+
+            .content-header {
+                margin-bottom: 1.5rem;
+            }
+
+            .content-title {
+                font-size: 1.75rem;
+                font-weight: 600;
+                margin-bottom: 0.375rem;
+            }
+
+            .content-subtitle {
+                color: var(--text-secondary);
+                font-size: 1rem;
+            }
+
+            .dashboard-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .properties-section {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+                margin-bottom: 2rem;
+            }
+
+            .properties-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+            }
+
+            .raw-panel {
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 8px;
+                padding: 1.25rem;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .property-group {
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 8px;
+                padding: 1.25rem;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .group-title {
+                font-size: 1.125rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                color: var(--text-primary);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .group-icon {
+                width: 18px;
+                height: 18px;
+                opacity: 0.7;
+            }
+
+            .property-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 0.875rem;
+            }
+
+            .property-item {
+                padding: 0.875rem;
+                background: var(--bg-tertiary);
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+            }
+
+            .property-label {
+                font-size: 0.75rem;
+                font-weight: 500;
+                color: var(--text-secondary);
+                margin-bottom: 0.25rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .property-value {
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: var(--text-primary);
+                word-break: break-all;
+            }
+
+            .property-description {
+                font-size: 0.6875rem;
+                color: var(--text-muted);
+                margin-top: 0.25rem;
+            }
+
+            .property-large {
+                grid-column: 1 / -1;
+            }
+
+            .property-large .property-value {
+                font-size: 0.75rem;
+                font-family: 'Courier New', monospace;
+                background: var(--code-bg);
+                padding: 0.625rem;
+                border-radius: 4px;
+                border: 1px solid var(--border-color);
+                margin-top: 0.5rem;
+            }
+
+            .raw-json {
+                background: var(--code-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                padding: 0.875rem;
+                font-family: 'Courier New', monospace;
+                font-size: 0.75rem;
+                line-height: 1.4;
+                white-space: pre-wrap;
+                max-height: 500px;
+                overflow-y: auto;
+                color: var(--text-primary);
+            }
+
+            .action-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                white-space: nowrap;
+                border-radius: 6px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                outline: none;
+                border: 2px solid #000000;
+                background: #ffffff;
+                color: #000000;
+                box-shadow: 4px 4px 0px 0px #000000;
+                padding: 0.625rem 1.25rem;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .action-btn:hover {
+                transform: translate(-1px, -1px);
+                box-shadow: 6px 6px 0px 0px #000000;
+            }
+
+            .action-btn:focus-visible {
+                outline: 3px solid var(--ring-color);
+            }
+
+            .action-btn.secondary {
+                background: transparent;
+                border: 2px solid var(--border-color);
+                color: var(--text-primary);
+                box-shadow: 4px 4px 0px 0px var(--border-color);
+            }
+
+            .action-btn.secondary:hover {
+                box-shadow: 6px 6px 0px 0px var(--border-color);
+            }
+
+            [data-theme="dark"] .action-btn {
+                border: 2px solid #ffffff;
+                background: #000000;
+                color: #ffffff;
+                box-shadow: 4px 4px 0px 0px #ffffff;
+            }
+
+            [data-theme="dark"] .action-btn:hover {
+                box-shadow: 6px 6px 0px 0px #ffffff;
+            }
+
+            .actions {
+                display: flex;
+                gap: 0.875rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .loading-state .property-value {
+                background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--border-color) 50%, var(--bg-tertiary) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+                color: transparent;
+                border-radius: 4px;
+            }
+
+            .loading-state .raw-json {
+                background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--border-color) 50%, var(--bg-tertiary) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+                color: transparent;
+                border-radius: 4px;
+                height: 180px;
+            }
+
+            @keyframes shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+            }
+
+            .data-loaded .property-group {
+                animation: fadeInUp 0.5s ease forwards;
+            }
+
+            .data-loaded .property-group:nth-child(1) { animation-delay: 0.1s; }
+            .data-loaded .property-group:nth-child(2) { animation-delay: 0.2s; }
+            .data-loaded .property-group:nth-child(3) { animation-delay: 0.3s; }
+            .data-loaded .property-group:nth-child(4) { animation-delay: 0.4s; }
+            .data-loaded .property-group:nth-child(5) { animation-delay: 0.5s; }
+
+            .data-loaded .raw-panel {
+                animation: fadeInUp 0.5s ease 0.6s forwards;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(15px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .capability-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .capability-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem;
+                background: var(--code-bg);
+                border-radius: 4px;
+                border: 1px solid var(--border-color);
+            }
+
+            .capability-name {
+                font-weight: 500;
+                color: var(--text-secondary);
+                font-size: 0.75rem;
+            }
+
+            .capability-value {
+                font-weight: 600;
+                color: var(--text-primary);
+                font-size: 0.75rem;
+            }
+
+            /* Responsive */
+            @media (max-width: 1024px) {
+                .dashboard-grid {
+                    flex-direction: column;
+                }
+                
+                .property-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                    transition: transform 0.3s ease;
+                }
+                
+                .sidebar.open {
+                    transform: translateX(0);
+                }
+                
+                .main-content {
+                    margin-left: 0;
+                    padding: 1rem;
+                }
+
+                .capability-list {
+                    grid-template-columns: 1fr;
+                }
+
+                .actions {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body class="loading-state">
+        <a href="https://ipriskify.com" target="_blank" rel="noopener noreferrer" class="pro-banner">
+            <div class="pro-banner-content">
+                99% browser fingerprinting with IPRiskify Pro <span class="inline-sparkles">✨</span>
+            </div>
+            <div class="pro-banner-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </div>
+        </a>
+        
+        <div class="dashboard">
+            <aside class="sidebar">
+                <div class="nav-header">
+                    <a href="#" class="nav-logo">
+                        <img src="./assets/logo_light.svg" alt="Logo" class="logo-light">
+                        <img src="./assets/logo_dark.svg" alt="Logo" class="logo-dark" style="display: none;">
+                    </a>
+                    
+                    <div class="theme-toggle" onclick="toggleTheme()">
+                        <div class="toggle-switch">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+                                <circle cx="12" cy="12" r="4"/>
+                                <path d="M12 2v2"/>
+                                <path d="M12 20v2"/>
+                                <path d="m4.93 4.93 1.41 1.41"/>
+                                <path d="m17.66 17.66 1.41 1.41"/>
+                                <path d="M2 12h2"/>
+                                <path d="M20 12h2"/>
+                                <path d="m6.34 17.66-1.41 1.41"/>
+                                <path d="m19.07 4.93-1.41 1.41"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon" style="display: none;">
+                                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-content">
+                    <nav>
+                        <ul class="nav-menu">
+                            <li class="nav-item">
+                                <a href="#overview" class="nav-link active" data-section="overview">
+                                    Overview
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#browser" class="nav-link" data-section="browser">
+                                    Browser
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#device" class="nav-link" data-section="device">
+                                    Device
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#security" class="nav-link" data-section="security">
+                                    Security
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#capabilities" class="nav-link" data-section="capabilities">
+                                    Capabilities
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#raw" class="nav-link" data-section="raw">
+                                    Raw Data
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <!-- Sidebar Footer -->
+                <div class="sidebar-footer">
+                    <a href="https://github.com/iprisikify" target="_blank" rel="noopener noreferrer" class="footer-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="content-header">
+                    <h1 class="content-title">Browser Fingerprint Dashboard</h1>
+                    <p class="content-subtitle">Comprehensive analysis of your browser's unique characteristics</p>
+                </div>
+
+                <div class="actions">
+                    <button class="action-btn" onclick="refreshFingerprint()">
+                        Refresh Data
+                    </button>
+                    <button class="action-btn secondary" onclick="copyRawData()">
+                        Copy JSON
+                    </button>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="properties-section">
+                        <div class="property-group" id="overview-group">
+                            <h2 class="group-title">
+                                Overview
+                            </h2>
+                            <div class="property-grid">
+                                <div class="property-item property-large">
+                                    <div class="property-label">Fingerprint Hash</div>
+                                    <div class="property-value" id="stat-fingerprint">Loading...</div>
+                                    <div class="property-description">Unique identifier based on browser characteristics</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Browser</div>
+                                    <div class="property-value" id="stat-browser">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Incognito Mode</div>
+                                    <div class="property-value" id="stat-incognito">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Bot Detected</div>
+                                    <div class="property-value" id="stat-bot">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="property-group" id="browser-group">
+                            <h2 class="group-title">
+                                Browser Details
+                            </h2>
+                            <div class="property-grid">
+                                <div class="property-item">
+                                    <div class="property-label">Operating System</div>
+                                    <div class="property-value" id="stat-os">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">OS Version</div>
+                                    <div class="property-value" id="stat-os-version">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Platform</div>
+                                    <div class="property-value" id="stat-platform">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Language</div>
+                                    <div class="property-value" id="stat-language">Loading...</div>
+                                </div>
+                                <div class="property-item property-large">
+                                    <div class="property-label">User Agent</div>
+                                    <div class="property-value" id="stat-browser-details">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="property-group" id="device-group">
+                            <h2 class="group-title">
+                                Device Information
+                            </h2>
+                            <div class="property-grid">
+                                <div class="property-item">
+                                    <div class="property-label">Device Type</div>
+                                    <div class="property-value" id="stat-device">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Screen Resolution</div>
+                                    <div class="property-value" id="stat-screen">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Timezone Offset</div>
+                                    <div class="property-value" id="stat-timezone">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Color Depth</div>
+                                    <div class="property-value" id="stat-color-depth">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="property-group" id="security-group">
+                            <h2 class="group-title">
+                                Security Features
+                            </h2>
+                            <div class="property-grid">
+                                <div class="property-item">
+                                    <div class="property-label">Cookies Enabled</div>
+                                    <div class="property-value" id="stat-cookies">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Do Not Track</div>
+                                    <div class="property-value" id="stat-dnt">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Java Enabled</div>
+                                    <div class="property-value" id="stat-java">Loading...</div>
+                                </div>
+                                <div class="property-item">
+                                    <div class="property-label">Touch Support</div>
+                                    <div class="property-value" id="stat-touch">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="property-group" id="capabilities-group">
+                            <h2 class="group-title">
+                                Browser Capabilities
+                            </h2>
+                            <div class="property-grid">
+                                <div class="property-item property-large">
+                                    <div class="property-label">Supported Features</div>
+                                    <div class="property-value">
+                                        <ul id="stat-capabilities" class="capability-list">
+                                            <li class="capability-item">
+                                                <span class="capability-name">Loading...</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raw Data Panel - Full Width at Bottom -->
+                    <div class="raw-panel">
+                        <h2 class="group-title">
+                            Raw JSON Data
+                        </h2>
+                        <pre class="raw-json" id="stat-raw">Loading raw fingerprint data...</pre>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <script src="./dist/ipriskify.min.js"></script>
+
+        <script>
+            let currentFingerprintData = null;
+            
+            async function loadFingerprint() {
+                try {
+                    const fpPromise = IPRiskify.load({ telemetry: true });
+                    
+                    const fp = await fpPromise;
+                    const result = await fp.get();
+                    
+                    currentFingerprintData = result;
+                    console.log('IPRiskify result:', result);
+                    
+                    document.body.classList.remove('loading-state');
+                    document.body.classList.add('data-loaded');
+                    
+                    setTimeout(() => {
+                        updateUI(result);
+                    }, 100);
+                    
+                } catch (error) {
+                    console.error('Failed to load fingerprint:', error);
+                    
+                    try {
+                        let fpClient;
+                        
+                        if (window.IPRiskify && typeof window.IPRiskify.load === 'function') {
+                            const fpPromise = window.IPRiskify.load({ telemetry: true });
+                            fpClient = await fpPromise;
+                        } else {
+                            throw new Error('IPRiskify client not found.');
+                        }
+                        
+                        const result = await fpClient.get();
+                        currentFingerprintData = result;
+                        console.log('IPRiskify result (fallback):', result);
+                        
+                        document.body.classList.remove('loading-state');
+                        document.body.classList.add('data-loaded');
+                        
+                        setTimeout(() => {
+                            updateUI(result);
+                        }, 100);
+                        
+                    } catch (fallbackError) {
+                        console.error('Fallback also failed:', fallbackError);
+                        showError('Failed to load fingerprint data. Make sure the IPRiskify bundle is available.');
+                    }
+                }
+            }
+            
+            function updateUI(result) {
+                console.log('Updating UI with:', result);
+                
+                const analysis = result.analysis || {};
+                const fingerprint = result.fingerprint || {};
+                const browserCapabilities = fingerprint.browserCapabilityInfo || {};
+                const screenInfo = fingerprint.screenInfo || {};
+                const webglInfo = fingerprint.webglInfo || {};
+                const mediaDevices = fingerprint.mediaDevicesInfo || {};
+                const automationInfo = fingerprint.automationInfo || {};
+                
+                // Overview stats
+                const fingerprintHash = analysis.fingerprint || fingerprint.visitorId || '';
+                document.getElementById('stat-fingerprint').textContent = fingerprintHash || '—';
+                document.getElementById('stat-browser').textContent = analysis.browser?.name || '—';
+                document.getElementById('stat-incognito').textContent = analysis.incognito === false ? 'No' : (analysis.incognito === true ? 'Yes' : '—');
+                document.getElementById('stat-bot').textContent = analysis.bot_detected === false ? 'No' : (analysis.bot_detected === true ? 'Yes' : '—');
+                
+                document.getElementById('stat-os').textContent = analysis.browser?.os || '—';
+                document.getElementById('stat-os-version').textContent = analysis.browser?.os_version || '—';
+                document.getElementById('stat-platform').textContent = fingerprint.platform || '—';
+                document.getElementById('stat-language').textContent = fingerprint.language || '—';
+                document.getElementById('stat-browser-details').textContent = analysis.browser?.user_agent || fingerprint.userAgent || '—';
+                
+                document.getElementById('stat-device').textContent = analysis.browser?.device || '—';
+                const screenDims = screenInfo.dimensionsObj;
+                document.getElementById('stat-screen').textContent = screenDims ? `${screenDims.width}x${screenDims.height}` : '—';
+                document.getElementById('stat-timezone').textContent = typeof fingerprint.timezoneOffsetMinutes === 'number' ? `${fingerprint.timezoneOffsetMinutes} min` : '—';
+                document.getElementById('stat-color-depth').textContent = screenInfo.colorDepth ? `${screenInfo.colorDepth} bits` : '—';
+                
+                document.getElementById('stat-cookies').textContent = browserCapabilities.cookiesEnabled === true ? 'Yes' : 'No';
+                document.getElementById('stat-dnt').textContent = fingerprint.doNotTrack === true ? 'Yes' : 'No';
+                document.getElementById('stat-java').textContent = browserCapabilities.javaEnabled === true ? 'Yes' : 'No';
+                document.getElementById('stat-touch').textContent = fingerprint.touchSupport === true ? 'Yes' : 'No';
+                
+                const capList = [
+                    ['Session Storage', browserCapabilities.hasSessionStorage === 1],
+                    ['Local Storage', browserCapabilities.hasLocalStorage === 1],
+                    ['IndexedDB', browserCapabilities.hasIndexedDB === 1],
+                    ['Cookies', browserCapabilities.cookiesEnabled === true],
+                    ['Java', browserCapabilities.javaEnabled === true],
+                    ['WebKit FileSystem', browserCapabilities.hasWebkitRequestFileSystem === true],
+                    ['OpenDatabase', browserCapabilities.hasOpenDatabase === true],
+                    ['Promise.allSettled', browserCapabilities.hasPromiseAllSettled === true],
+                    ['MsSaveBlob', browserCapabilities.hasMsSaveBlob === true]
+                ];
+                
+                const capabilityHTML = capList.map(([name, value]) => 
+                    `<li class="capability-item">
+                        <span class="capability-name">${name}</span>
+                        <span class="capability-value">${value ? 'Yes' : 'No'}</span>
+                    </li>`
+                ).join('');
+                
+                document.getElementById('stat-capabilities').innerHTML = capabilityHTML;
+                
+                // Raw data
+                document.getElementById('stat-raw').textContent = JSON.stringify(result, null, 2);
+            }
+            
+            function showError(message) {
+                document.getElementById('stat-raw').textContent = message;
+                const elements = [
+                    'stat-fingerprint', 'stat-browser', 'stat-incognito', 'stat-bot', 'stat-os', 
+                    'stat-os-version', 'stat-device', 'stat-platform', 'stat-language', 'stat-timezone',
+                    'stat-screen', 'stat-color-depth', 'stat-cookies', 'stat-dnt', 'stat-java', 'stat-touch'
+                ];
+                elements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = 'Error';
+                });
+                document.getElementById('stat-capabilities').innerHTML = '<li class="capability-item"><span class="capability-name">Error loading capabilities</span></li>';
+                
+                document.body.classList.remove('loading-state');
+                document.body.classList.add('data-loaded');
+            }
+            
+            function refreshFingerprint() {
+                document.body.classList.remove('data-loaded');
+                document.body.classList.add('loading-state');
+                
+                const elements = [
+                    'stat-fingerprint', 'stat-browser', 'stat-incognito', 'stat-bot', 'stat-os', 
+                    'stat-os-version', 'stat-device', 'stat-platform', 'stat-language', 'stat-timezone',
+                    'stat-screen', 'stat-color-depth', 'stat-cookies', 'stat-dnt', 'stat-java', 'stat-touch'
+                ];
+                elements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = 'Loading...';
+                });
+                document.getElementById('stat-capabilities').innerHTML = '<li class="capability-item"><span class="capability-name">Loading...</span></li>';
+                document.getElementById('stat-raw').textContent = 'Loading raw fingerprint data...';
+                
+                setTimeout(() => {
+                    loadFingerprint();
+                }, 200);
+            }
+            
+            async function copyRawData() {
+                if (currentFingerprintData) {
+                    try {
+                        await navigator.clipboard.writeText(JSON.stringify(currentFingerprintData, null, 2));
+                        alert('Copied to clipboard!');
+                    } catch (err) {
+                        alert('Failed to copy to clipboard');
+                    }
+                } else {
+                    alert('No data to copy');
+                }
+            }
+            
+            function toggleTheme() {
+                const body = document.body;
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                setTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            }
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeTheme();
+                
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        
+                        this.classList.add('active');
+                        
+                        const section = this.getAttribute('data-section');
+                        const target = document.getElementById(section + '-group');
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    });
+                });
+                
+                loadFingerprint();
+            });
+
+            function initializeTheme() {
+                const body = document.body;
+                const logoLight = document.querySelector('.logo-light');
+                const logoDark = document.querySelector('.logo-dark');
+                const sunIcon = document.querySelector('.sun-icon');
+                const moonIcon = document.querySelector('.moon-icon');
+                
+                const savedTheme = localStorage.getItem('theme');
+                const browserPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                let theme = 'light';
+                if (savedTheme) {
+                    theme = savedTheme;
+                } else if (browserPrefersDark) {
+                    theme = 'dark';
+                }
+                
+                setTheme(theme);
+                
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    if (!localStorage.getItem('theme')) {
+                        setTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+
+            function setTheme(theme) {
+                const body = document.body;
+                const logoLight = document.querySelector('.logo-light');
+                const logoDark = document.querySelector('.logo-dark');
+                const sunIcon = document.querySelector('.sun-icon');
+                const moonIcon = document.querySelector('.moon-icon');
+                
+                body.setAttribute('data-theme', theme);
+                
+                if (theme === 'dark') {
+                    logoLight.style.display = 'none';
+                    logoDark.style.display = 'block';
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                } else {
+                    logoLight.style.display = 'block';
+                    logoDark.style.display = 'none';
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                }
+            }
+        </script>
+    </body>
+</html>
